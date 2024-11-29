@@ -1,0 +1,915 @@
+<html><head><base href="." /><title>Cartão Rápido - Bilhete de Transporte</title><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><style>
+    :root {
+        --primary-color: #0066cc;
+        --secondary-color: #ffdf00;
+        --text-color: #002776;
+        --white: #ffffff;
+        --error-color: #ff4444;
+        --success-color: #00C851;
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+        background-color: #f0f0f5;
+        color: var(--text-color);
+        max-width: 100vw;
+        min-height: 100vh;
+        position: relative;
+    }
+    
+    .container {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 15px;
+        background: #f8f9fa;
+        min-height: 100vh;
+        padding-bottom: 70px; /* Add space for bottom nav */
+    }
+    
+    .header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #004999 100%);
+        padding: 25px 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+        pointer-events: none;
+    }
+    
+    .logo {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        padding: 10px 0;
+    }
+    
+    .logo h1 {
+        font-size: 2.2rem;
+        margin: 15px 0 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: var(--white);
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .card-number {
+        color: var(--white);
+        font-size: 1rem;
+        margin-top: 8px;
+        opacity: 0.9;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
+    
+    .card {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin: 15px 0;
+    }
+    
+    .quick-action-button {
+        background: #f5f5f5;
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding: 15px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .quick-action-button:hover {
+        background: #e9e9e9;
+    }
+    
+    .quick-action-button svg {
+        width: 24px;
+        height: 24px;
+        margin-bottom: 5px;
+    }
+    
+    .quick-action-button span {
+        display: block;
+        font-size: 0.9rem;
+        color: var(--text-color);
+    }
+    
+    .card-type {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: var(--primary-color);
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+    }
+    
+    .balance-container {
+        text-align: center;
+        padding: 20px 0;
+    }
+    
+    .balance-label {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 5px;
+    }
+    
+    .auto-topup-status {
+        font-size: 0.8rem;
+        color: var(--success-color);
+        margin-top: 5px;
+    }
+    
+    .transaction-list {
+        list-style: none;
+    }
+    
+    .transaction-item {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .transaction-date {
+        color: #666;
+        font-size: 14px;
+    }
+    
+    .transaction-amount {
+        font-weight: bold;
+    }
+    
+    .negative {
+        color: var(--error-color);
+    }
+    
+    .positive {
+        color: var(--success-color);
+    }
+    
+    .tab-container {
+        display: flex;
+        margin-bottom: 20px;
+        background: #fff;
+        padding: 5px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .tab {
+        flex: 1;
+        text-align: center;
+        padding: 12px;
+        background: #fff;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .tab.active {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    #qrCode {
+        width: 200px;
+        height: 200px;
+        margin: 20px auto;
+        display: block;
+    }
+    
+    .notification {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 15px 25px;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 1000;
+    }
+    
+    .notification.success {
+        background-color: var(--success-color);
+    }
+    
+    .notification.error {
+        background-color: var(--error-color);
+    }
+    
+    .notification.info {
+        background-color: #0088cc;
+    }
+    
+    .notification.show {
+        opacity: 1;
+    }
+    
+    .recharge-form {
+        display: none;
+        padding: 20px;
+        background: white;
+        border-radius: 15px;
+    }
+    
+    .recharge-form.active {
+        display: block;
+    }
+    
+    .history-view {
+        display: none;
+        padding: 20px;
+    }
+    
+    .history-view.active {
+        display: block;
+    }
+    
+    .circular-slider-container {
+        width: 280px;
+        height: 280px;
+        margin: 30px auto;
+        padding: 10px; /* Reduced from 15px to 10px */
+        background: linear-gradient(145deg, #f8f9fa, #ffffff);
+        border-radius: 50%;
+        box-shadow: 
+            8px 8px 15px rgba(0, 0, 0, 0.1),
+            -8px -8px 15px rgba(255, 255, 255, 0.8);
+    }
+    
+    .circular-slider {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .slider-circle {
+        position: absolute;
+        top: 10px; /* Reduced from 15px to 10px */
+        left: 10px; /* Reduced from 15px to 10px */
+        width: calc(100% - 20px); /* Reduced from 30px to 20px */
+        height: calc(100% - 20px); /* Reduced from 30px to 20px */
+        border: 2px solid #e8e8e8;
+        border-radius: 50%;
+        background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    }
+    
+    .slider-handle {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background: var(--primary-color);
+        border: 3px solid #ffffff;
+        border-radius: 50%;
+        cursor: pointer;
+        transform: translate(-50%, -50%);
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+        z-index: 2;
+    }
+    
+    .slider-value {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 2.2em;
+        font-weight: bold;
+        color: var(--primary-color);
+        text-align: center;
+        background: white;
+        padding: 15px;
+        border-radius: 50%;
+        width: 150px;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1);
+        border: 1px solid #f0f0f0;
+    }
+    
+    .preset-values {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .preset-value {
+        position: absolute;
+        font-size: 0.8em;
+        color: #666;
+        font-weight: 500;
+        background: white;
+        padding: 3px 8px;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transform: translate(-50%, -50%);
+    }
+    
+    .slider-bg {
+        position: absolute;
+        top: 10px; /* Reduced from 15px to 10px */
+        left: 10px; /* Reduced from 15px to 10px */
+        width: calc(100% - 20px); /* Reduced from 30px to 20px */
+        height: calc(100% - 20px); /* Reduced from 30px to 20px */
+        border-radius: 50%;
+        background: conic-gradient(
+            from -90deg,
+            var(--primary-color) 0%,
+            var(--primary-color) 0%,
+            rgba(0, 102, 204, 0.1) 0%
+        );
+        opacity: 0.3;
+        transition: all 0.3s ease;
+    }
+    
+    .recharge-form h3 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+        font-size: 1.5em;
+    }
+    
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        z-index: 100;
+    }
+    
+    .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #666;
+        text-decoration: none;
+        font-size: 0.8rem;
+        padding: 5px;
+        transition: color 0.3s;
+    }
+    
+    .nav-item.active {
+        color: var(--primary-color);
+    }
+    
+    .nav-item svg {
+        width: 24px;
+        height: 24px;
+        margin-bottom: 4px;
+    }
+    
+    @media (max-width: 480px) {
+        .container {
+            padding: 10px;
+        }
+        
+        .balance {
+            font-size: 28px;
+        }
+    
+        .header {
+            border-radius: 0;
+            margin: -15px -15px 20px -15px;
+        }
+    
+        .transaction-item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    
+        .transaction-date {
+            margin: 5px 0;
+        }
+    }
+    
+    .profile-form {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+    
+    .profile-form input {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+    
+    .payment-method {
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .add-payment-btn {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        width: 100%;
+        margin-top: 15px;
+        cursor: pointer;
+    }
+    </style>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script></head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <div class="logo">
+                    <svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Ponte Hercilio Luz stylized background -->
+                        <path d="M20 45 C20 45, 50 15, 100 15 C150 15, 180 45, 180 45" 
+                              stroke="rgba(255,255,255,0.15)" stroke-width="2" fill="none"/>
+                        <path d="M60 15 L60 45" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
+                        <path d="M140 15 L140 45" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
+                        <path d="M40 30 Q100 0 160 30" stroke="rgba(255,255,255,0.15)" stroke-width="2" fill="none"/>
+                        
+                        <!-- Decorative elements -->
+                        <circle cx="100" cy="30" r="8" fill="rgba(255,255,255,0.1)"/>
+                        <circle cx="60" cy="15" r="4" fill="rgba(255,255,255,0.1)"/>
+                        <circle cx="140" cy="15" r="4" fill="rgba(255,255,255,0.1)"/>
+                        
+                        <!-- Card icon -->
+                        <rect x="155" y="20" width="30" height="20" rx="3" 
+                              stroke="rgba(255,255,255,0.8)" stroke-width="2" fill="none"/>
+                        <line x1="155" y1="28" x2="185" y2="28" 
+                              stroke="rgba(255,255,255,0.8)" stroke-width="2"/>
+                    </svg>
+                    <h1>IlhaCard</h1>
+                    <div class="card-number">Cartão #7123 4567 8901</div>
+                </div>
+            </div>
+    
+            <div class="tab-container">
+                <div class="tab active" onclick="switchView('balance')">Saldo</div>
+                <div class="tab" onclick="switchView('qr')">QR Code</div>
+            </div>
+    
+            <div id="balanceTab" class="card">
+                <div class="card-type">Cartão Comum</div>
+                <div class="balance-container">
+                    <div class="balance-label">Saldo Disponível</div>
+                    <div class="balance">R$ 35,80</div>
+                    <div class="auto-topup-status">Auto Top-up: R$ 30,00 quando abaixo de R$ 10,00</div>
+                </div>
+                
+                <div class="quick-actions">
+                    <div class="quick-action-button" onclick="showRechargeForm()">
+                        <svg viewBox="0 0 24 24" fill="var(--primary-color)">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+                        </svg>
+                        <span>Recarga</span>
+                    </div>
+                    <div class="quick-action-button" onclick="setupAutoTopup()">
+                        <svg viewBox="0 0 24 24" fill="var(--primary-color)">
+                            <path d="M11.8 10.9c-2.27-.59-3–1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                        </svg>
+                        <span>Auto Top-up</span>
+                    </div>
+                </div>
+            </div>
+    
+            <div id="qrTab" class="card" style="display: none;">
+                <div id="qrCode"></div>
+                <p style="text-align: center; margin-top: 10px;">
+                    Apresente este QR Code no validador
+                </p>
+            </div>
+    
+            <div class="card" id="recentTransactions">
+                <h3>Últimas Transações</h3>
+                <ul class="transaction-list">
+                    <li class="transaction-item">
+                        <span>TICEN - Terminal Central</span>
+                        <span class="transaction-date">Hoje, 14:30</span>
+                        <span class="transaction-amount negative">-R$ 4,50</span>
+                    </li>
+                    <li class="transaction-item">
+                        <span>Recarga Online</span>
+                        <span class="transaction-date">Ontem, 10:15</span>
+                        <span class="transaction-amount positive">+R$ 50,00</span>
+                    </li>
+                    <li class="transaction-item">
+                        <span>TITRI - Terminal Trindade</span>
+                        <span class="transaction-date">Ontem, 08:30</span>
+                        <span class="transaction-amount negative">-R$ 4,50</span>
+                    </li>
+                </ul>
+            </div>
+    
+            <div id="historyView" class="history-view">
+                <h3>Histórico Completo</h3>
+                <ul class="transaction-list" id="fullHistory">
+                    <!-- History items will be populated here -->
+                </ul>
+                <button onclick="hideHistoryView()" class="quick-action-button">Voltar</button>
+            </div>
+    
+            <div id="rechargeForm" class="recharge-form">
+                <h3>Fazer Recarga</h3>
+                <div class="circular-slider-container">
+                    <div class="circular-slider">
+                        <div class="slider-circle"></div>
+                        <div class="slider-bg"></div>
+                        <div class="slider-handle"></div>
+                        <div class="slider-value">R$ 0,00</div>
+                        <div class="preset-values">
+                            <span class="preset-value" style="top: 10%; left: 50%;">R$ 5</span>
+                            <span class="preset-value" style="top: 25%; left: 75%;">R$ 10</span>
+                            <span class="preset-value" style="top: 50%; left: 85%;">R$ 20</span>
+                            <span class="preset-value" style="top: 75%; left: 75%;">R$ 50</span>
+                            <span class="preset-value" style="top: 90%; left: 50%;">R$ 100</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="quick-actions">
+                    <button onclick="processRecharge()" class="quick-action-button">Confirmar</button>
+                    <button onclick="hideRechargeForm()" class="quick-action-button">Cancelar</button>
+                </div>
+            </div>
+    
+        </div>
+    
+        <div class="notification" id="notification"></div>
+    
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active" onclick="switchView('balance')">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+                Home
+            </a>
+            <a href="config.html" class="nav-item" onclick="switchView('settings')">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.63-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.03-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                </svg>
+                Config
+            </a>
+            <a href="perfil.html" class="nav-item" onclick="switchView('profile')">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                </svg>
+                Perfil
+            </a>
+            <a href="pagamento.html" class="nav-item" onclick="switchView('payments')">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                </svg>
+                Pagamento
+            </a>
+        </nav>
+    
+        <script>
+            let currentBalance = 35.80;
+    
+            window.onload = function() {
+                // Create QR Code
+                new QRCode(document.getElementById("qrCode"), {
+                    text: "CARTAO-RAPIDO-FLORIPA-123456789",
+                    width: 200,
+                    height: 200,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.H
+                });
+    
+                // Initialize NFC reading prompt
+                setTimeout(() => {
+                    showNotification('Aproxime seu cartão do celular para leitura...', 'info');
+                    initNFCReading();
+                }, 1000);
+    
+                // Initialize full history only if the element exists
+                const fullHistoryElement = document.getElementById('fullHistory');
+                if (fullHistoryElement) {
+                    populateFullHistory();
+                }
+            };
+    
+            function initNFCReading() {
+                if ('NDEFReader' in window) {
+                    const ndef = new NDEFReader();
+                    ndef.scan().then(() => {
+                        ndef.onreading = event => {
+                            // Process card reading
+                            showNotification('Cartão lido com sucesso!', 'success');
+                            // Here you would typically process the card data
+                            // and update the UI with the card details
+                        };
+                    }).catch(error => {
+                        showNotification('Erro: NFC não disponível. Tente novamente.', 'error');
+                    });
+                } else {
+                    // Fallback if NFC not available
+                    setTimeout(() => {
+                        showNotification('Cartão lido com sucesso! (Simulação)', 'success');
+                    }, 2000);
+                }
+            }
+    
+            function showNotification(message, type) {
+                const notification = document.getElementById('notification');
+                notification.textContent = message;
+                notification.className = `notification ${type}`;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+    
+            function switchView(view) {
+                // Hide all views
+                document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                
+                // Show selected view
+                switch(view) {
+                    case 'balance':
+                        document.getElementById('balanceTab').style.display = 'block';
+                        document.getElementById('qrTab').style.display = 'none';
+                        document.getElementById('recentTransactions').style.display = 'block';
+                        if (document.getElementById('rechargeForm')) {
+                            document.getElementById('rechargeForm').classList.remove('active');
+                        }
+                        break;
+                    case 'qr':
+                        document.getElementById('balanceTab').style.display = 'none';
+                        document.getElementById('qrTab').style.display = 'block';
+                        document.getElementById('recentTransactions').style.display = 'none';
+                        if (document.getElementById('rechargeForm')) {
+                            document.getElementById('rechargeForm').classList.remove('active');
+                        }
+                        break;
+                    case 'settings':
+                        window.location.href = 'settings.html'; // Navigation to separate page
+                        break;
+                    case 'profile':
+                        window.location.href = 'profile.html'; // Navigation to separate page
+                        break;
+                    case 'payments':
+                        window.location.href = 'payments.html'; // Navigation to separate page
+                        break;
+                }
+                
+                // Update active nav item
+                const activeNavItem = document.querySelector(`.nav-item[onclick*="${view}"]`);
+                if (activeNavItem) {
+                    activeNavItem.classList.add('active');
+                }
+            }
+    
+            function showRechargeForm() {
+                const rechargeForm = document.getElementById('rechargeForm');
+                rechargeForm.classList.add('active');
+                document.getElementById('recentTransactions').style.display = 'none';
+                
+                // Initialize circular slider
+                initCircularSlider();
+            }
+    
+            function initCircularSlider() {
+                const container = document.querySelector('.circular-slider-container');
+                const handle = document.querySelector('.slider-handle');
+                const valueDisplay = document.querySelector('.slider-value');
+                const sliderBg = document.querySelector('.slider-bg');
+                let isDragging = false;
+                let currentRotation = 0;
+                const presetValues = [5, 10, 20, 50, 100];
+                
+                // Position preset value indicators
+                const presetValuesContainer = document.querySelector('.preset-values');
+                presetValues.forEach((value, index) => {
+                    const angle = (index * (360 / presetValues.length)) - 90;
+                    const radian = angle * Math.PI / 180;
+                    const radius = 42; // percentage
+                    const x = 50 + Math.cos(radian) * radius;
+                    const y = 50 + Math.sin(radian) * radius;
+                    
+                    const element = document.querySelector(`.preset-value:nth-child(${index + 1})`);
+                    if (element) {
+                        element.style.left = `${x}%`;
+                        element.style.top = `${y}%`;
+                    }
+                });
+                
+                function updateSlider(event) {
+                    if (!isDragging) return;
+                    
+                    const rect = container.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    
+                    const angle = Math.atan2(
+                        event.clientY - centerY,
+                        event.clientX - centerX
+                    ) * 180 / Math.PI + 90;
+                    
+                    currentRotation = angle < 0 ? angle + 360 : angle;
+                    
+                    // Calculate handle position
+                    const radius = 42; // percentage from center
+                    const radian = (currentRotation - 90) * Math.PI / 180;
+                    const x = 50 + Math.cos(radian) * radius;
+                    const y = 50 + Math.sin(radian) * radius;
+                    
+                    handle.style.left = `${x}%`;
+                    handle.style.top = `${y}%`;
+                    
+                    // Snap to nearest preset value
+                    const section = Math.round(currentRotation / (360 / presetValues.length));
+                    const value = presetValues[section % presetValues.length];
+                    valueDisplay.textContent = `R$ ${value},00`;
+                    
+                    // Update progress gradient
+                    const percentage = ((currentRotation + 90) / 360) * 100;
+                    sliderBg.style.background = `conic-gradient(
+                        from -90deg,
+                        var(--primary-color) 0%,
+                        var(--primary-color) ${percentage}%,
+                        rgba(0, 102, 204, 0.1) ${percentage}%
+                    )`;
+                }
+                
+                handle.addEventListener('mousedown', () => isDragging = true);
+                document.addEventListener('mousemove', updateSlider);
+                document.addEventListener('mouseup', () => isDragging = false);
+                
+                // Touch events
+                handle.addEventListener('touchstart', (e) => {
+                    isDragging = true;
+                    e.preventDefault();
+                });
+                document.addEventListener('touchmove', (e) => {
+                    if (isDragging) {
+                        updateSlider(e.touches[0]);
+                    }
+                });
+                document.addEventListener('touchend', () => isDragging = false);
+                
+                // Set initial position
+                updateSlider({
+                    clientX: container.getBoundingClientRect().left + container.offsetWidth,
+                    clientY: container.getBoundingClientRect().top + container.getBoundingClientRect().height / 2
+                });
+            }
+    
+            function hideRechargeForm() {
+                document.getElementById('rechargeForm').classList.remove('active');
+                document.getElementById('recentTransactions').style.display = 'block';
+            }
+    
+            function processRecharge() {
+                const amount = parseFloat(document.querySelector('.slider-value').textContent.replace('R$ ', '').replace(',00', ''));
+                if (amount && amount > 0) {
+                    // Show NFC prompt
+                    showNotification('Aproxime seu cartão do celular para concluir a recarga...', 'info');
+                    
+                    // Check if NFC is available
+                    if ('NDEFReader' in window) {
+                        const ndef = new NDEFReader();
+                        ndef.scan().then(() => {
+                            ndef.onreading = event => {
+                                // Process NFC reading
+                                completeRecharge(amount);
+                            };
+                        }).catch(error => {
+                            showNotification('Erro: NFC não disponível. Tente novamente.', 'error');
+                        });
+                    } else {
+                        // Fallback if NFC not available
+                        setTimeout(() => completeRecharge(amount), 2000);
+                    }
+                } else {
+                    showNotification('Por favor, selecione um valor válido', 'error');
+                }
+            }
+    
+            function completeRecharge(amount) {
+                currentBalance += amount;
+                document.querySelector('.balance').textContent = `R$ ${currentBalance.toFixed(2)}`;
+                
+                // Add to transaction history
+                const now = new Date();
+                const transaction = {
+                    type: 'Recarga NFC',
+                    date: `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`,
+                    amount: amount,
+                    location: 'Via NFC'
+                };
+                
+                // Update recent transactions
+                const transactionList = document.querySelector('.transaction-list');
+                const newTransaction = document.createElement('li');
+                newTransaction.className = 'transaction-item';
+                newTransaction.innerHTML = `
+                    <span>${transaction.type}</span>
+                    <span class="transaction-date">Hoje, ${transaction.date}</span>
+                    <span class="transaction-amount positive">+R$ ${transaction.amount.toFixed(2)}</span>
+                `;
+                transactionList.insertBefore(newTransaction, transactionList.firstChild);
+                
+                showNotification(`Recarga de R$ ${amount.toFixed(2)} realizada com sucesso!`, 'success');
+                hideRechargeForm();
+            }
+    
+            function showHistoryView() {
+                document.getElementById('historyView').classList.add('active');
+                document.getElementById('recentTransactions').style.display = 'none';
+            }
+    
+            function hideHistoryView() {
+                document.getElementById('historyView').classList.remove('active');
+                document.getElementById('recentTransactions').style.display = 'block';
+            }
+    
+            function setupAutoTopup() {
+                showNotification('Configuração de recarga automática', 'info');
+                // Add auto top-up setup logic here
+            }
+    
+            function viewCardDetails() {
+                showNotification('Detalhes do cartão', 'info');
+                // Add card details view logic here
+            }
+    
+            function populateFullHistory() {
+                const historyList = document.getElementById('fullHistory');
+                if (!historyList) {
+                    console.warn('History list element not found');
+                    return;
+                }
+    
+                const historyData = [
+                    { type: 'TICEN - Terminal Central', date: 'Hoje, 14:30', amount: -4.50, location: 'Florianópolis' },
+                    { type: 'Recarga Online', date: 'Ontem, 10:15', amount: 50.00, location: 'Web' },
+                    { type: 'TITRI - Terminal Trindade', date: 'Ontem, 08:30', amount: -4.50, location: 'Florianópolis' },
+                    { type: 'Auto Top-up', date: '22/07, 18:45', amount: 30.00, location: 'Sistema' },
+                    { type: 'TICAN - Terminal Canasvieiras', date: '22/07, 15:20', amount: -4.50, location: 'Florianópolis' },
+                    { type: 'Recarga em Terminal', date: '21/07, 09:00', amount: 100.00, location: 'TICEN' }
+                ];
+    
+                historyList.innerHTML = '';
+    
+                historyData.forEach(transaction => {
+                    const li = document.createElement('li');
+                    li.className = 'transaction-item';
+                    li.innerHTML = `
+                        <div>
+                            <strong>${transaction.type}</strong>
+                            <div class="transaction-location">${transaction.location}</div>
+                        </div>
+                        <div>
+                            <span class="transaction-date">${transaction.date}</span>
+                            <span class="transaction-amount ${transaction.amount < 0 ? 'negative' : 'positive'}">
+                                ${transaction.amount < 0 ? '-' : '+'}R$ ${Math.abs(transaction.amount).toFixed(2)}
+                            </span>
+                        </div>
+                    `;
+                    historyList.appendChild(li);
+                });
+            }
+        </script>
+    </body></html>

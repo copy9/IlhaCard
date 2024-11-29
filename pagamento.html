@@ -1,0 +1,381 @@
+<html><head><base href="." /><title>IlhaCard - Pagamentos</title><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><style>
+    /* Import existing styles from main page */
+    :root {
+        --primary-color: #0066cc;
+        --secondary-color: #ffdf00;
+        --text-color: #002776;
+        --white: #ffffff;
+        --error-color: #ff4444;
+        --success-color: #00C851;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        background-color: #f0f0f5;
+        color: var(--text-color);
+        max-width: 100vw;
+        min-height: 100vh;
+        position: relative;
+    }
+
+    .container {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 15px;
+        background: #f8f9fa;
+        min-height: 100vh;
+        padding-bottom: 70px;
+    }
+
+    .header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, #004999 100%);
+        padding: 25px 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .logo {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        padding: 10px 0;
+    }
+
+    .logo h1 {
+        font-size: 2.2rem;
+        margin: 15px 0 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: var(--white);
+        text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .payment-section {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 15px 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .payment-option {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .payment-option:hover {
+        background-color: #f5f5f5;
+    }
+
+    .payment-option:last-child {
+        border-bottom: none;
+    }
+
+    .payment-icon {
+        width: 40px;
+        height: 40px;
+        margin-right: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .payment-icon svg {
+        width: 100%;
+        height: 100%;
+        fill: var(--primary-color);
+    }
+
+    .payment-details {
+        flex-grow: 1;
+    }
+
+    .payment-title {
+        font-weight: 600;
+        color: var(--text-color);
+        margin-bottom: 4px;
+    }
+
+    .payment-description {
+        font-size: 0.9em;
+        color: #666;
+    }
+
+    .chevron-icon {
+        width: 24px;
+        height: 24px;
+        fill: #666;
+    }
+
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        display: flex;
+        justify-content: space-around;
+        padding: 10px 0;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        z-index: 100;
+    }
+
+    .nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #666;
+        text-decoration: none;
+        font-size: 0.8rem;
+        padding: 5px;
+        transition: color 0.3s;
+    }
+
+    .nav-item.active {
+        color: var(--primary-color);
+    }
+
+    .nav-item svg {
+        width: 24px;
+        height: 24px;
+        margin-bottom: 4px;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 500px;
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .close-button {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #666;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--text-color);
+        font-weight: 500;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+    }
+
+    .submit-button {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 8px;
+        width: 100%;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .submit-button:hover {
+        background: #0052a3;
+    }
+</style></head><body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <h1>Pagamentos</h1>
+            </div>
+        </div>
+
+        <div class="payment-section">
+            <div class="payment-option" onclick="showCardModal()">
+                <div class="payment-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+                    </svg>
+                </div>
+                <div class="payment-details">
+                    <div class="payment-title">Cartão de Crédito/Débito</div>
+                    <div class="payment-description">Adicione um novo cartão</div>
+                </div>
+                <svg class="chevron-icon" viewBox="0 0 24 24">
+                    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                </svg>
+            </div>
+
+            <div class="payment-option" onclick="showPixModal()">
+                <div class="payment-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.64 0 .84.65 1.39 2.67 1.91s4.18 1.39 4.18 3.91c-.01 1.83-1.38 2.83-3.12 3.16z"/>
+                    </svg>
+                </div>
+                <div class="payment-details">
+                    <div class="payment-title">PIX</div>
+                    <div class="payment-description">Configure sua chave PIX</div>
+                </div>
+                <svg class="chevron-icon" viewBox="0 0 24 24">
+                    <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Modal -->
+    <div id="cardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Adicionar Cartão</h2>
+                <button class="close-button" onclick="closeModal('cardModal')">&times;</button>
+            </div>
+            <form onsubmit="return false;">
+                <div class="form-group">
+                    <label>Número do Cartão</label>
+                    <input type="text" placeholder="0000 0000 0000 0000" />
+                </div>
+                <div class="form-group">
+                    <label>Nome no Cartão</label>
+                    <input type="text" placeholder="Nome como está no cartão" />
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Validade</label>
+                        <input type="text" placeholder="MM/AA" />
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>CVV</label>
+                        <input type="text" placeholder="123" maxlength="4" />
+                    </div>
+                </div>
+                <button class="submit-button" onclick="saveCard()">Salvar Cartão</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- PIX Modal -->
+    <div id="pixModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Configurar PIX</h2>
+                <button class="close-button" onclick="closeModal('pixModal')">&times;</button>
+            </div>
+            <form onsubmit="return false;">
+                <div class="form-group">
+                    <label>Tipo de Chave</label>
+                    <select class="form-control">
+                        <option>CPF</option>
+                        <option>E-mail</option>
+                        <option>Celular</option>
+                        <option>Chave Aleatória</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Chave PIX</label>
+                    <input type="text" placeholder="Digite sua chave PIX" />
+                </div>
+                <button class="submit-button" onclick="savePix()">Salvar Chave PIX</button>
+            </form>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active" onclick="switchView('balance')">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            Home
+        </a>
+        <a href="config.html" class="nav-item" onclick="switchView('settings')">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.63-.07.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.03-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+            </svg>
+            Config
+        </a>
+        <a href="perfil.html" class="nav-item" onclick="switchView('profile')">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+            Perfil
+        </a>
+        <a href="pagamento.html" class="nav-item" onclick="switchView('payments')">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/>
+            </svg>
+            Pagamento
+        </a>
+    </nav>
+
+    <script>
+        function showCardModal() {
+            document.getElementById('cardModal').style.display = 'flex';
+        }
+
+        function showPixModal() {
+            document.getElementById('pixModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function saveCard() {
+            alert('Cartão salvo com sucesso!');
+            closeModal('cardModal');
+        }
+
+        function savePix() {
+            alert('Chave PIX salva com sucesso!');
+            closeModal('pixModal');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body></html>
