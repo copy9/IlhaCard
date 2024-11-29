@@ -28,8 +28,9 @@
         margin: 0 auto;
         padding: 15px;
         background: #f8f9fa;
-        min-height: 100vh;
-        padding-bottom: 70px; /* Add space for bottom nav */
+        min-height: calc(100vh - 60px);
+        padding-bottom: 80px; /* Improved bottom spacing */
+        overflow-y: auto; /* Ensure content is always scrollable but doesn't hide behind bottom nav */
     }
     
     .header {
@@ -83,6 +84,11 @@
     }
     
     .quick-actions {
+        position: relative;
+        z-index: 10; /* Ensure buttons are always visible */
+        background: white;
+        padding: 10px 0;
+        margin-top: 10px; /* Improved spacing */
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 10px;
@@ -144,18 +150,21 @@
     }
     
     .transaction-list {
-        list-style: none;
+        width: 100%;
+        overflow-x: hidden;
     }
     
     .transaction-item {
         padding: 15px;
         border-bottom: 1px solid #eee;
-        display: flex;
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
         align-items: center;
     }
     
     .transaction-date {
+        grid-column: 1 / -1;
         color: #666;
         font-size: 14px;
     }
@@ -197,10 +206,9 @@
     }
     
     #qrCode {
-        width: 200px;
-        height: 200px;
-        margin: 20px auto;
-        display: block;
+        max-width: 100%;
+        height: auto;
+        margin: 15px auto;
     }
     
     .notification {
@@ -234,10 +242,13 @@
     }
     
     .recharge-form {
+        max-width: 100%;
+        overflow: hidden;
         display: none;
-        padding: 20px;
+        padding: 15px;
         background: white;
         border-radius: 15px;
+        margin-bottom: 70px; /* Add space for bottom nav */
     }
     
     .recharge-form.active {
@@ -254,15 +265,10 @@
     }
     
     .circular-slider-container {
-        width: 280px;
-        height: 280px;
-        margin: 30px auto;
-        padding: 10px; /* Reduced from 15px to 10px */
-        background: linear-gradient(145deg, #f8f9fa, #ffffff);
-        border-radius: 50%;
-        box-shadow: 
-            8px 8px 15px rgba(0, 0, 0, 0.1),
-            -8px -8px 15px rgba(255, 255, 255, 0.8);
+        width: 240px; /* Reduced from 280px */
+        height: 240px; /* Reduced from 280px */
+        margin: 20px auto; /* Reduced margin */
+        padding: 10px; /* Reduced padding */
     }
     
     .circular-slider {
@@ -273,10 +279,10 @@
     
     .slider-circle {
         position: absolute;
-        top: 10px; /* Reduced from 15px to 10px */
-        left: 10px; /* Reduced from 15px to 10px */
-        width: calc(100% - 20px); /* Reduced from 30px to 20px */
-        height: calc(100% - 20px); /* Reduced from 30px to 20px */
+        top: 15px;
+        left: 15px;
+        width: calc(100% - 30px);
+        height: calc(100% - 30px);
         border: 2px solid #e8e8e8;
         border-radius: 50%;
         background: linear-gradient(145deg, #ffffff, #f0f0f0);
@@ -336,10 +342,10 @@
     
     .slider-bg {
         position: absolute;
-        top: 10px; /* Reduced from 15px to 10px */
-        left: 10px; /* Reduced from 15px to 10px */
-        width: calc(100% - 20px); /* Reduced from 30px to 20px */
-        height: calc(100% - 20px); /* Reduced from 30px to 20px */
+        top: 15px;
+        left: 15px;
+        width: calc(100% - 30px);
+        height: calc(100% - 30px);
         border-radius: 50%;
         background: conic-gradient(
             from -90deg,
@@ -353,9 +359,9 @@
     
     .recharge-form h3 {
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 15px; /* Reduced margin */
         color: var(--primary-color);
-        font-size: 1.5em;
+        font-size: 1.3em; /* Adjusted font size */
     }
     
     .bottom-nav {
@@ -366,7 +372,7 @@
         background: white;
         display: flex;
         justify-content: space-around;
-        padding: 10px 0;
+        padding: 8px 0; /* Improved bottom nav responsiveness */
         box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
         z-index: 100;
     }
@@ -377,7 +383,7 @@
         align-items: center;
         color: #666;
         text-decoration: none;
-        font-size: 0.8rem;
+        font-size: 0.75rem; /* Improved bottom nav responsiveness */
         padding: 5px;
         transition: color 0.3s;
     }
@@ -387,8 +393,8 @@
     }
     
     .nav-item svg {
-        width: 24px;
-        height: 24px;
+        width: 20px; /* Improved bottom nav responsiveness */
+        height: 20px; /* Improved bottom nav responsiveness */
         margin-bottom: 4px;
     }
     
@@ -397,59 +403,106 @@
             padding: 10px;
         }
         
+        .logo h1 {
+            font-size: 1.8rem; /* Smaller font size for mobile */
+        }
+        
+        .card-number {
+            font-size: 0.9rem;
+        }
+        
         .balance {
-            font-size: 28px;
+            font-size: 1.8rem;
         }
     
         .header {
-            border-radius: 0;
-            margin: -15px -15px 20px -15px;
+            margin: -10px -10px 15px -10px;
+            padding: 15px;
         }
     
         .transaction-item {
-            flex-direction: column;
-            align-items: flex-start;
+            padding: 12px;
+            font-size: 0.9rem;
         }
     
-        .transaction-date {
-            margin: 5px 0;
+        .quick-actions {
+            grid-gap: 8px;
+            margin: 10px 0; /* Adjusted margin */
+        }
+    
+        .quick-action-button {
+            padding: 12px;
+            min-height: 40px; /* Improved button visibility */
+        }
+    
+        .quick-action-button svg {
+            width: 20px;
+            height: 20px;
+        }
+    
+        .circular-slider-container {
+            width: 220px; /* Even smaller for mobile */
+            height: 220px;
+            margin: 15px auto;
+        }
+    
+        .slider-value {
+            width: 110px;
+            height: 110px;
+            font-size: 1.6em;
+        }
+    
+        .preset-value {
+            font-size: 0.7em;
+            padding: 2px 6px; /* Adjusted padding */
         }
     }
     
-    .profile-form {
-        background: white;
-        padding: 20px;
-        border-radius: 10px;
-        margin-top: 20px;
+    @media (max-width: 360px) {
+        .logo h1 {
+            font-size: 1.6rem;
+        }
+        
+        .card-number {
+            font-size: 0.8rem;
+        }
+        
+        .balance {
+            font-size: 1.6rem;
+        }
+    
+        .quick-action-button span {
+            font-size: 0.8rem;
+        }
+    
+        .circular-slider-container {
+            width: 200px; /* Even smaller for very small screens */
+            height: 200px;
+        }
+    
+        .slider-value {
+            width: 100px;
+            height: 100px;
+            font-size: 1.4em;
+        }
+    
+        .preset-value {
+            font-size: 0.65em;
+            padding: 2px 4px; /* Adjusted padding */
+        }
     }
     
-    .profile-form input {
-        width: 100%;
-        padding: 12px;
-        margin: 8px 0;
-        border: 1px solid #ddd;
-        border-radius: 8px;
+    /* Add smooth scrolling for better mobile experience */
+    html {
+        scroll-behavior: smooth;
     }
     
-    .payment-method {
-        background: white;
-        padding: 15px;
-        border-radius: 10px;
-        margin: 10px 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-    
-    .add-payment-btn {
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 12px 20px;
-        border-radius: 8px;
-        width: 100%;
-        margin-top: 15px;
-        cursor: pointer;
+    /* Improve touch targets for mobile */
+    button, 
+    .quick-action-button,
+    .nav-item,
+    .tab {
+        min-height: 44px; /* Minimum touch target size */
     }
     </style>
     
@@ -708,6 +761,12 @@
                 
                 // Initialize circular slider
                 initCircularSlider();
+                
+                // Scroll to top to ensure full visibility
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
             }
     
             function initCircularSlider() {
@@ -911,5 +970,27 @@
                     historyList.appendChild(li);
                 });
             }
+    
+            // Add scroll handling for better mobile experience
+            document.addEventListener('DOMContentLoaded', function() {
+                const rechargeForm = document.getElementById('rechargeForm');
+                
+                // Ensure content is visible when keyboard appears on mobile
+                if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                    window.addEventListener('resize', function() {
+                        if (rechargeForm.classList.contains('active')) {
+                            const formRect = rechargeForm.getBoundingClientRect();
+                            const viewportHeight = window.innerHeight;
+                            
+                            if (formRect.bottom > viewportHeight) {
+                                window.scrollTo({
+                                    top: window.scrollY + (formRect.bottom - viewportHeight) + 10,
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }
+                    });
+                }
+            });
         </script>
     </body></html>
